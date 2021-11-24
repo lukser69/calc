@@ -4,41 +4,44 @@
 		<meta charset="UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="stylesheet" href="normalize.css">
 		<link rel="stylesheet" href="style.css" />
 		<title>Calculator</title>
 	</head>
 	<body>
-		<div class="calc">
-			<div class="screen">
-				<div class="result"></div>
-				<div class="enter"></div>
-			</div>
+		<div class="wrapper">
+			<div class="calc">
+				<div class="screen">
+					<div class="result"></div>
+					<div class="enter"></div>
+				</div>
 
-			<div class="button">
-				<button class="btn sign">%</button>
-				<button class="btn delete">CE</button>
-				<button class="btn delete">C</button>
-				<button class="btn backspace" id="backspace">&xlArr;</button>
-				<button class="btn fraction" id="fraction">1/X</button>
-				<button class="btn fraction" id="degree">X<sup>2</sup></button>
-				<button class="btn fraction" id="sqrt">&radic;X</button>
-				<button class="btn sign" id="/">&divide;</button>
-				<button class="btn num">7</button>
-				<button class="btn num">8</button>
-				<button class="btn num">9</button>
-				<button class="btn sign" id="*">&times;</button>
-				<button class="btn num">4</button>
-				<button class="btn num">5</button>
-				<button class="btn num">6</button>
-				<button class="btn sign" id="-">&ndash;</button>
-				<button class="btn num">1</button>
-				<button class="btn num">2</button>
-				<button class="btn num">3</button>
-				<button class="btn sign" id="+">+</button>
-				<button class="btn symbol">+/-</button>
-				<button class="btn num">0</button>
-				<button class="btn symbol" id="point">.</button>
-				<button class="btn equally">=</button>
+				<div class="button">
+					<button class="btn sign">%</button>
+					<button class="btn enterClear">CE</button>
+					<button class="btn allClear">C</button>
+					<button class="btn backspace">&xlArr;</button>
+					<button class="btn fraction">1/X</button>
+					<button class="btn degree">X<sup>2</sup></button>
+					<button class="btn sqrt">&radic;X</button>
+					<button class="btn sign" data-sign="/">&divide;</button>
+					<button class="btn num">7</button>
+					<button class="btn num">8</button>
+					<button class="btn num">9</button>
+					<button class="btn sign" data-sign="*">&times;</button>
+					<button class="btn num">4</button>
+					<button class="btn num">5</button>
+					<button class="btn num">6</button>
+					<button class="btn sign" data-sign="-">&ndash;</button>
+					<button class="btn num">1</button>
+					<button class="btn num">2</button>
+					<button class="btn num">3</button>
+					<button class="btn sign" data-sign="+">+</button>
+					<button class="btn swapSign">+/-</button>
+					<button class="btn num">0</button>
+					<button class="btn decimalPoint">.</button>
+					<button class="btn equal">=</button>
+				</div>
 			</div>
 		</div>
 		<script src="app.js"></script>

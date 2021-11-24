@@ -2,8 +2,8 @@
 	box-sizing: border-box;
 }
 
-body {
-	width: 70%;
+.wrapper {
+	width: 100%;
 	height: 100vh;
 	margin: 0 auto;
 	display: flex;
@@ -13,7 +13,8 @@ body {
 }
 
 .calc {
-	width: 400px;
+	min-width: 400px;
+	max-width: 400px;
 	background-color: rgba(153, 153, 153, 0.575);
 }
 .screen {
@@ -39,18 +40,15 @@ body {
 }
 .enter {
 	display: flex;
-	flex-wrap: nowrap;
+	word-break: break-all;
 	justify-content: end;
 	align-items: center;
 	width: 100%;
 	height: 70%;
 	padding: 4px;
 	overflow-x: auto;
-}
-.screen > span {
-	display: inline-block;
-	margin: 0;
-	padding: 0;
+	font-size: 45px;
+
 }
 .field {
 	width: 390px;
@@ -82,20 +80,24 @@ body {
 }
 
 .num,
-.symbol {
+.swapSign,
+.decimalPoint {
 	background-color: #000;
 	color: #fff;
 }
 
 .sign,
-.delete,
+.enterClear,
+.allClear,
 .fraction,
+.degree,
+.sqrt,
 .backspace {
 	background-color: grey;
 	color: #fff;
 }
 
-.equally {
+.equal {
 	background-color: rgba(99, 99, 247, 0.411);
 	color: #fff;
 }

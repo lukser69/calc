@@ -3,197 +3,302 @@ const result = document.querySelector('.result');
 const nums = document.querySelectorAll('.num');
 const signs = document.querySelectorAll('.sign');
 const symbols = document.querySelectorAll('.symbol');
-const deletes = document.querySelectorAll('.delete');
-const equally = document.querySelector('.equally');
-const fraction = document.getElementById('fraction');
-const sqrt = document.getElementById('sqrt');
-const degree = document.getElementById('degree');
-const point = document.getElementById('point');
-const backspace = document.getElementById('backspace');
+const btnThatClearEnter = document.querySelector('.enterClear');
+const btnThatAllClear = document.querySelector('.allClear');
+const equal = document.querySelector('.equal');
+const fraction = document.querySelector('.fraction');
+const sqrt = document.querySelector('.sqrt');
+const degree = document.querySelector('.degree');
+const decimalPoint = document.querySelector('.decimalPoint');
+const backspace = document.querySelector('.backspace');
+const swapSign = document.querySelector('.swapSign');
 let sum = '';
+let lastSign = '';
 
 for (const num of nums) {
 	num.addEventListener('click', (event) => {
-		enter.innerHTML += `<span>${event.target.innerText}</span>`;
+		enter.innerText += `${event.target.innerText}`;
 		sum += `${event.target.innerText}`;
-		result.innerHTML = eval(sum);
 	});
 }
 
 for (const sign of signs) {
 	sign.addEventListener('click', (event) => {
-		enter.innerHTML += `<span>${event.target.innerText}</span>`;
-		sum += `${event.target.id}`;
+		if (sum !== '') {
+			const resultText = result.innerHTML;
+			const lastEl = sum[sum.length - 1];
+			if (lastEl !== lastSign) {
+				result.innerHTML = `${eval(sum)}&nbsp;${event.target.innerText}`;
+				sum = eval(sum) + event.target.dataset.sign;
+				lastSign = `${event.target.dataset.sign}`;
+				enter.innerText = '';
+			} else {
+				result.innerHTML = `${resultText.slice(0, sum.length - 1)}&nbsp;${
+					event.target.innerHTML
+				}`;
+				sum = eval(sum.slice(0, sum.length - 1)) + event.target.dataset.sign;
+				lastSign = `${event.target.dataset.sign}`;
+			}
+		} else if (sum === '' && event.target.dataset.sign === '-') {
+			sum += '0-';
+			result.innerHTML = `0&nbsp;${event.target.innerText}`;
+			lastSign = `${event.target.dataset.sign}`;
+		}
 	});
 }
 
-for (const del of deletes) {
-	del.addEventListener('click', (event) => {
-		enter.innerHTML = '';
-		sum = '';
-		result.innerHTML = '';
-	});
-}
+btnThatClearEnter.addEventListener('click', (event) => {
+	if (sum !== '') {
+		const searchEqual = result.innerText.indexOf('=');
+		if (result.innerText === '') {
+			enter.innerText = '';
+			sum = '';
+		} else if (searchEqual !== -1) {
+			enter.innerText = '';
+			sum = '';
+			result.innerText = '';
+		} else {
+			enter.innerText = '';
+			let lastEl = sum[sum.length - 1];
+			while (lastEl !== lastSign) {
+				sum = sum.slice(0, sum.length - 1);
+				lastEl = sum[sum.length - 1];
+			}
+		}
+	}
+});
 
-point.addEventListener('click', () => {
+btnThatAllClear.addEventListener('click', (event) => {
+	enter.innerText = '';
+	sum = '';
+	result.innerText = '';
+});
+
+decimalPoint.addEventListener('click', () => {
+	funcDecimalPoint();
+});
+
+swapSign.addEventListener('click', () => {
 	if (sum != '') {
-		enter.innerHTML += '<span>.</span>';
-		sum += '.';
+		const enterText = enter.innerText;
+		if (+enterText > 0) {
+			enter.innerHTML = `-${enterText}`;
+			let searchLastSign = sum.indexOf(lastSign);
+			sum = sum.slice(0, searchLastSign + 1) + `(${enter.innerText})`;
+		} else if (+enterText < 0) {
+			enter.innerHTML = enterText.slice(1);
+			let searchLastSign = sum.indexOf(lastSign);
+			sum = sum.slice(0, searchLastSign + 1) + enter.innerText;
+		}
 	}
 });
 
 fraction.addEventListener('click', (event) => {
 	if (sum != '') {
-		enter.innerHTML = `<span>${eval(`1/(${sum})`)}</span>`;
-		sum = eval(`1/(${sum})`);
-		result.innerHTML = '';
+		let newSum = eval(`1/(${sum})`);
+		let fractionalPart = `${newSum}`.split('.').pop();
+		if (fractionalPart.length > 7) newSum = `${parseFloat(newSum).toFixed(7)}`;
+		enter.innerText = newSum;
+		sum = newSum;
+		result.innerText = '';
 	}
 });
 
 sqrt.addEventListener('click', (event) => {
 	if (sum != '') {
-		enter.innerHTML = `<span>${Math.sqrt(eval(sum))}</span>`;
-		sum = Math.sqrt(eval(sum));
-		result.innerHTML = '';
+		let newSum = Math.sqrt(eval(sum));
+		let fractionalPart = `${newSum}`.split('.').pop();
+		if (fractionalPart.length > 7) newSum = `${parseFloat(newSum).toFixed(7)}`;
+		enter.innerText = `${newSum}`;
+		sum = `${newSum}`;
+		result.innerText = '';
 	}
 });
 
 degree.addEventListener('click', (event) => {
 	if (sum != '') {
-		enter.innerHTML = `<span>${eval(`(${sum})*(${sum})`)}</span>`;
-		sum = eval(`(${sum})*(${sum})`);
-		result.innerHTML = '';
+		let newSum = Math.pow(eval(sum), 2);
+		let fractionalPart = `${newSum}`.split('.').pop();
+		if (fractionalPart.length > 7) newSum = `${parseFloat(newSum).toFixed(7)}`;
+		enter.innerText = `${newSum}`;
+		sum = `${newSum}`;
+		result.innerText = '';
 	}
 });
 
-equally.addEventListener('click', (event) => {
-	if (sum != '') {
-		enter.innerHTML = `<span>${eval(sum)}</span>`;
-		sum = `${eval(sum)}`;
-		result.innerHTML = '';
-	}
+equal.addEventListener('click', (event) => {
+	funcEqual();
 });
 
 backspace.addEventListener('click', (event) => {
-	if (sum != '') {
-		let newSum;
-		newSum = sum.split('');
-		newSum.pop();
-		sum = newSum.join('');
-		enter.innerHTML = `<span>${sum}</span>`;
-		if (sum.length === 0) result.innerHTML = '';
-	}
+	funcBackspace();
 });
 
 document.addEventListener('keydown', (event) => {
 	switch (event.key) {
 		case '0':
-			enter.innerHTML += `<span>0</span>`;
+			enter.innerText += `0`;
 			sum += '0';
-			result.innerHTML = eval(sum);
 			break;
 		case '1':
-			enter.innerHTML += `<span>1</span>`;
+			enter.innerText += `1`;
 			sum += '1';
-			result.innerHTML = eval(sum);
 			break;
 		case '2':
-			enter.innerHTML += `<span>2</span>`;
+			enter.innerText += `2`;
 			sum += '2';
-			result.innerHTML = eval(sum);
 			break;
 		case '3':
-			enter.innerHTML += `<span>3</span>`;
+			enter.innerText += `3`;
 			sum += '3';
-			result.innerHTML = eval(sum);
 			break;
 		case '4':
-			enter.innerHTML += `<span>4</span>`;
+			enter.innerText += `4`;
 			sum += '4';
-			result.innerHTML = eval(sum);
 			break;
 		case '5':
-			enter.innerHTML += `<span>5</span>`;
+			enter.innerText += `5`;
 			sum += '5';
-			result.innerHTML = eval(sum);
 			break;
 		case '6':
-			enter.innerHTML += `<span>6</span>`;
+			enter.innerText += `6`;
 			sum += '6';
-			result.innerHTML = eval(sum);
 			break;
 		case '7':
-			enter.innerHTML += `<span>7</span>`;
+			enter.innerText += `7`;
 			sum += '7';
-			result.innerHTML = eval(sum);
 			break;
 		case '8':
-			enter.innerHTML += `<span>8</span>`;
+			enter.innerText += `8`;
 			sum += '8';
-			result.innerHTML = eval(sum);
 			break;
 		case '9':
-			enter.innerHTML += `<span>9</span>`;
+			enter.innerText += `9`;
 			sum += '9';
-			result.innerHTML = eval(sum);
+			break;
+		case '.':
+			funcDecimalPoint();
 			break;
 		case 'Backspace':
-			if (sum != '') {
-				let newSum;
-				newSum = sum.split('');
-				newSum.pop();
-				sum = newSum.join('');
-				enter.innerHTML = `<span>${sum}</span>`;
-				if (sum.length === 0) result.innerHTML = '';
-			}
+			funcBackspace();
 			break;
 		case '=':
-			if (sum != '') {
-				enter.innerHTML = `<span>${eval(sum)}</span>`;
-				sum = `${eval(sum)}`;
-				result.innerHTML = '';
-			}
+			funcEqual();
 			break;
 		case 'Enter':
-			if (sum != '') {
-				enter.innerHTML = `<span>${eval(sum)}</span>`;
-				sum = `${eval(sum)}`;
-				result.innerHTML = '';
-				console.log(typeof 1);
-				break;
-			}
+			funcEqual();
+			break;
 	}
 });
 
 document.addEventListener('keydown', (event) => {
-	let newSum = sum.split('');
 	if (
-		newSum.pop() !== '/' ||
-		newSum.pop() !== '*' ||
-		newSum.pop() !== '-' ||
-		newSum.pop() !== '+'
+		sum !== '' &&
+		(event.key === '+' ||
+			event.key === '-' ||
+			event.key === '*' ||
+			event.key === '/')
 	) {
-		switch (event.key) {
-			case '-':
-				enter.innerHTML += `<span>-</span>`;
-				sum += '-';
-				break;
-			case '*':
-				enter.innerHTML += `<span>&times;</span>`;
-				sum += '*';
-				break;
-			case '/':
-				enter.innerHTML += `<span>&divide;</span>`;
-				sum += '/';
-				break;
-			case '+':
-				enter.innerHTML += `<span>+</span>`;
-				sum += '+';
-				break;
-			case '.':
-				enter.innerHTML += `<span>.</span>`;
-				sum += '.';
-				break;
+		const resultText = result.innerHTML;
+		const lastEl = sum[sum.length - 1];
+		if (lastEl !== lastSign) {
+			lastSign = `${event.key}`;
+			enter.innerText = '';
+			switch (event.key) {
+				case '-':
+					result.innerHTML = `${eval(sum)}&nbsp;&ndash;`;
+					sum = eval(sum) + '-';
+					break;
+				case '*':
+					result.innerHTML = `${eval(sum)}&nbsp;&times;`;
+					sum = eval(sum) + '*';
+					break;
+				case '/':
+					result.innerHTML = `${eval(sum)}&nbsp;&divide;`;
+					sum = eval(sum) + '/';
+					break;
+				case '+':
+					result.innerHTML = `${eval(sum)}&nbsp;+`;
+					sum = eval(sum) + '+';
+					break;
+			}
+		} else {
+			lastSign = `${event.key}`;
+			switch (event.key) {
+				case '-':
+					result.innerHTML = `${resultText.slice(
+						0,
+						sum.length - 1
+					)}&nbsp;&ndash;`;
+					sum = eval(sum.slice(0, sum.length - 1)) + '-';
+					break;
+				case '*':
+					result.innerHTML = `${resultText.slice(
+						0,
+						sum.length - 1
+					)}&nbsp;&times;`;
+					sum = eval(sum.slice(0, sum.length - 1)) + '*';
+					break;
+				case '/':
+					result.innerHTML = `${resultText.slice(
+						0,
+						sum.length - 1
+					)}&nbsp;&divide;`;
+					sum = eval(sum.slice(0, sum.length - 1)) + '/';
+					break;
+				case '+':
+					result.innerHTML = `${resultText.slice(0, sum.length - 1)}&nbsp;+`;
+					sum = eval(sum.slice(0, sum.length - 1)) + '+';
+					break;
+			}
 		}
+	} else if (sum === '' && event.key === '-') {
+		sum += '0-';
+		result.innerHTML = `0&nbsp;${event.key}`;
+		lastSign = `${event.key}`;
 	}
 });
+
+function funcDecimalPoint() {
+	const enterText = enter.innerText;
+	if (enterText !== '') {
+		const searchEqual = result.innerText.indexOf('=');
+		const splitEnterText = enterText.split('.');
+
+		if (searchEqual !== -1) result.innerText = '';
+
+		if (splitEnterText.length === 1) {
+			enter.innerText += '.';
+			sum += '.';
+		}
+	} else {
+		enter.innerText += '0.';
+		sum += '0.';
+	}
+}
+
+function funcBackspace() {
+	if (enter.innerText != '') {
+		const searchEqual = result.innerText.indexOf('=');
+		if (searchEqual === -1) {
+			const enterText = enter.innerText;
+			sum = sum.slice(0, sum.length - 1);
+			enter.innerText = enterText.slice(0, enterText.length - 1);
+		} else {
+			result.innerText = '';
+		}
+	}
+}
+
+function funcEqual() {
+	if (sum != '') {
+		const searchEqual = result.innerText.indexOf('=');
+		if (searchEqual === -1) {
+			sum = `${eval(sum)}`;
+			let fractionalPart = sum.split('.').pop();
+			if (fractionalPart.length > 7) sum = `${parseFloat(sum).toFixed(7)}`;
+			result.innerHTML += `&nbsp;${enter.innerText}&nbsp;=`;
+			enter.innerText = sum;
+		}
+	}
+}
